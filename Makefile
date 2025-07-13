@@ -1,4 +1,4 @@
-NAME = push_swap
+NAME = philosophers
 
 CC = gcc
 
@@ -10,15 +10,8 @@ LIBDIR2 = ./ft_printf
 LIB = $(LIBDIR2)/libprintf.a $(LIBDIR1)/libft.a  
 
 
-SRC =	./mandatory/src/utils.c \
-		./mandatory/src/main.c \
-		./mandatory/src/stack.c \
-		./mandatory/src/moves_1.c \
-		./mandatory/src/moves_2.c \
-		./mandatory/src/ksort.c \
-		./mandatory/src/sp_cases.c \
-		./mandatory/src/index.c \
-		./mandatory/src/prints.c
+SRC =	./philo/utils.c \
+		./philo/main.c
 
 OBJ = $(SRC:.c=.o)
 
