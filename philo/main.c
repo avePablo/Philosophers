@@ -1,4 +1,5 @@
 #include "philosophers.h"
+#include <stdio.h>
 
 int parse(int argc, char** argv)
 {   
@@ -21,31 +22,15 @@ int parse(int argc, char** argv)
     return 0;
 }
 
-void init_philos()
+void asig_struct(char *argv[])
 {
-t_philosophers *philo;
-}
+t_general *data = malloc(sizeof(t_general));
+init_general(data, argv);
 
-void init_general()
-{
-t_general *data;
+t_philosophers *philo = malloc(sizeof(t_philosophers) * data->number_of_philosophers);
+init_philos(philo, data->number_of_philosophers);
 
-data->number_of_philosophers = 0;
-data->number_of_times_each_philosopher_must_eat = 0;
-}
-
-void asig_struct(argv)
-{
-int i;
-i = 0;
-while (argv[i])
-{   
-    if (argv[i] = 1)
-    data->number_of_philosophers=ft_atoi(argv[i]);
-    else if (argv[i] = 5)
-    data->number_of_times_each_philosopher_must_eat=ft_atoi(argv[i]);
-    i++;
-}
+print_philos(data, philo, data->number_of_philosophers); //borrar luego
 }
 
 int main(int argc, char** argv)
@@ -55,7 +40,6 @@ int main(int argc, char** argv)
         error_handler();
         return 1;
     }
-    init_struct();
     asig_struct(argv);
     return 0;
 }
