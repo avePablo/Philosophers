@@ -30,7 +30,7 @@ init_general(data, argv);
 t_philosophers *philo = malloc(sizeof(t_philosophers) * data->number_of_philosophers);
 init_philos(philo, data->number_of_philosophers);
 
-print_philos(data, philo, data->number_of_philosophers); //borrar luego
+// print_philos(data, philo, data->number_of_philosophers); //borrar luego
 }
 
 int main(int argc, char** argv)

@@ -9,6 +9,22 @@
 #include <stdio.h>
 
 #define PHILO_MAX_COUNT 200
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+
+typedef struct s_general
+{
+    long long time_to_die;
+    long long time_to_eat;
+    long long time_to_sleep;
+	int number_of_philosophers;
+    int number_of_times_each_philosopher_must_eat;
+}					t_general;
+
 
 typedef struct s_philosophers
 {
@@ -16,16 +32,8 @@ typedef struct s_philosophers
     int fork_1;
     int fork_r;
     int status;
+    struct s_general *data;
 }					t_philosophers;
-
-typedef struct s_general
-{
-    float time_to_die;
-    float time_to_eat;
-    float time_to_sleep;
-	int number_of_philosophers;
-    int number_of_times_each_philosopher_must_eat;
-}					t_general;
 
 int main(int argc, char** argv);
 
@@ -42,5 +50,7 @@ void init_general(t_general *data, char *argv[]);
 void init_philos(t_philosophers *philo, int number_of_philosophers);
 
 void print_philos(t_general *data, t_philosophers *philo, int number_of_philosophers);
+
+void print_threads(int id);
 
 #endif
