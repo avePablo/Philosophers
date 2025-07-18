@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <stdio.h>
+#include <pthread.h>
 
 #define PHILO_MAX_COUNT 200
 #define RESET   "\033[0m"
