@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <stdio.h>
 
 #define PHILO_MAX_COUNT 200
 #define RESET   "\033[0m"
@@ -33,7 +34,8 @@ typedef struct s_philosophers
     int fork_1;
     int fork_r;
     int status;
-    struct s_general *data;
+    struct s_general    *data;
+    pthread_t   thread;
 }					t_philosophers;
 
 int main(int argc, char** argv);
@@ -53,5 +55,7 @@ void init_philos(t_philosophers *philo, int number_of_philosophers);
 void print_philos(t_general *data, t_philosophers *philo, int number_of_philosophers);
 
 void print_threads(int id);
+
+int is_digit_str (char* str);
 
 #endif
