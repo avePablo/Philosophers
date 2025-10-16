@@ -30,11 +30,11 @@ init_general(data, argv);
 
 t_philosophers *philo = malloc(sizeof(t_philosophers) * data->number_of_philosophers);
 init_philos(philo, data->number_of_philosophers);
-int i = 0;
-while(i < data->number_of_philosophers)
-{
-    // print_threads(data[i].number_of_philosophers); //colorines
-    i++;
-}
-// print_philos(data, philo, data->number_of_philosophers); //borrar luego
+// int i = 0;
+// while(i < data->number_of_philosophers)
+// {
+//     // print_threads(data[i].number_of_philosophers); //colorines
+//     i++;
+// }
+// // print_philos(data, philo, data->number_of_philosophers); //borrar luego
 }
