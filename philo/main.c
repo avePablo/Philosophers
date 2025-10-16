@@ -2,9 +2,10 @@
 
 int main(int argc, char** argv)
 {
-    if(parse(argc, argv) == 1)
+    int i = parse(argc, argv);
+    if(i != 0)
     {
-        error_handler();
+        error_handler(i);
         return 1;
     }
     asig_struct(argv);

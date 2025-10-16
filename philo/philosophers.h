@@ -42,7 +42,7 @@ int main(int argc, char** argv);
 
 int parse(int argc, char** argv);
 
-void error_handler();
+void error_handler(int err);
 
 void error_handler_free();
 

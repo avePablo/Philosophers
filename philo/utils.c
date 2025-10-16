@@ -1,8 +1,11 @@
 #include "philosophers.h"
 
-void error_handler()
-{
+void error_handler(int err)
+{   
+    if (err == 1)
     ft_printf("invalid/wrong number of arguments");
+    else if (err == 2)
+     printf("un filosofo no puede comer 0 veces");
 }
 
 void error_handler_free()

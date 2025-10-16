@@ -16,6 +16,10 @@ int parse(int argc, char** argv)
         return 1;
         else if (i == 5 && (arg < 0 || arg > INT_MAX))
         return 1;
+        else if (i == 5 && arg == 0)
+        {
+        return 2;
+        }
         else if (i != 1 && i != 5 && (arg < 1 || arg > INT_MAX))
         return 1;
         i++;
@@ -30,11 +34,14 @@ init_general(data, argv);
 
 t_philosophers *philo = malloc(sizeof(t_philosophers) * data->number_of_philosophers);
 init_philos(philo, data->number_of_philosophers);
-// int i = 0;
+
+//                                                      To Do: para que vaya imprimiendo lo que hace cada philo con colores, los colores ya están falta el codigo 
+
+//int i = 0;
 // while(i < data->number_of_philosophers)
 // {
-//     // print_threads(data[i].number_of_philosophers); //colorines
+//     print_threads(data[i].number_of_philosophers); //colorines
 //     i++;
 // }
-// // print_philos(data, philo, data->number_of_philosophers); //borrar luego
+print_philos(data, philo, data->number_of_philosophers); //borrar luego, imprime el struct pa ver que esta bien 
 }
