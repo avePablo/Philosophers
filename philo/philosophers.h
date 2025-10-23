@@ -18,15 +18,6 @@
 #define BLUE    "\033[34m"
 #define MAGENTA "\033[35m"
 
-typedef struct s_general
-{
-    long long time_to_die;
-    long long time_to_eat;
-    long long time_to_sleep;
-	int number_of_philosophers;
-    int number_of_times_each_philosopher_must_eat;
-}					t_general;
-
 
 typedef struct s_philosophers
 {
@@ -34,11 +25,23 @@ typedef struct s_philosophers
     int fork_1;
     int fork_r;
     int status;
-    struct s_general    *data;
     pthread_t   thread;
 }					t_philosophers;
 
+typedef struct s_general
+{
+    long long time_to_die;
+    long long time_to_eat;
+    long long time_to_sleep;
+	int number_of_philosophers;
+    int number_of_times_each_philosopher_must_eat;
+    t_philosophers philo[200];
+    pthread_mutex_t a;
+}					t_general;
+
 int main(int argc, char** argv);
+
+int mutex_create(t_general *general);
 
 int parse(int argc, char** argv);
 
@@ -57,5 +60,9 @@ void print_philos(t_general *data, t_philosophers *philo, int number_of_philosop
 void print_threads(int id);
 
 int is_digit_str (char* str);
+
+void *ft_routine (t_general *general);
+
+int thread_create(t_general *general);
 
 #endif

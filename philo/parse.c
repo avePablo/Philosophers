@@ -35,6 +35,10 @@ init_general(data, argv);
 t_philosophers *philo = malloc(sizeof(t_philosophers) * data->number_of_philosophers);
 init_philos(philo, data->number_of_philosophers);
 
+mutex_create(data);
+thread_create(data);
+
+
 //                                                      To Do: para que vaya imprimiendo lo que hace cada philo con colores, los colores ya están falta el codigo 
 
 //int i = 0;
@@ -43,5 +47,5 @@ init_philos(philo, data->number_of_philosophers);
 //     print_threads(data[i].number_of_philosophers); //colorines
 //     i++;
 // }
-print_philos(data, philo, data->number_of_philosophers); //borrar luego, imprime el struct pa ver que esta bien 
+// print_philos(data, philo, data->number_of_philosophers); //borrar luego, imprime el struct pa ver que esta bien 
 }
