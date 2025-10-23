@@ -14,6 +14,7 @@ SRC =	./philo/utils.c \
 		./philo/main.c \
 		./philo/init.c \
 		./philo/parse.c \
+		./philo/simu.c \
 		./philo/extra.c 
 
 OBJ = $(SRC:.c=.o)
