@@ -12,10 +12,9 @@ LIB = $(LIBDIR2)/libprintf.a $(LIBDIR1)/libft.a
 
 SRC =	./philo/utils.c \
 		./philo/main.c \
-		./philo/init.c \
+		./philo/actions.c \
 		./philo/parse.c \
-		./philo/simu.c \
-		./philo/extra.c 
+		./philo/simu.c 
 
 OBJ = $(SRC:.c=.o)
 

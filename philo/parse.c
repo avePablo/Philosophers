@@ -26,34 +26,3 @@ int parse(int argc, char** argv)
     }
     return 0;
 }
-
-void asig_struct(char *argv[])
-{
-    t_general *data = malloc(sizeof(t_general));
-    if (!data)
-        return;
-
-    init_general(data, argv);
-
-    init_philos(data->philo, data->number_of_philosophers);
-
-    mutex_create(data);
-    thread_create(data);
-
-    for (int i = 0; i < data->number_of_philosophers; i++)
-        pthread_join(data->philo[i].thread, NULL);
-
-    free(data);
-}
-
-
-
-//                                                      To Do: para que vaya imprimiendo lo que hace cada philo con colores, los colores ya están falta el codigo 
-
-//int i = 0;
-// while(i < data->number_of_philosophers)
-// {
-//     print_threads(data[i].number_of_philosophers); //colorines
-//     i++;
-// }
-// print_philos(data, philo, data->number_of_philosophers); //borrar luego, imprime el struct pa ver que esta bien 

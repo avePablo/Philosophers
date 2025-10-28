@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #define PHILO_MAX_COUNT 200
 #define RESET   "\033[0m"
@@ -18,51 +19,66 @@
 #define BLUE    "\033[34m"
 #define MAGENTA "\033[35m"
 
+typedef struct s_general t_general;
+typedef struct s_philosophers t_philosophers;
 
-typedef struct s_philosophers
+struct s_philosophers
 {
     int id;
-    int fork_1;
+    int fork_l;
     int fork_r;
-    int status;
-    pthread_t   thread;
-}					t_philosophers;
+    long long last_meal;
+    pthread_t thread;
+    t_general *data;
+};
 
-typedef struct s_general
+struct s_general
 {
+    int number_of_philosophers;
     long long time_to_die;
     long long time_to_eat;
     long long time_to_sleep;
-	int number_of_philosophers;
     int number_of_times_each_philosopher_must_eat;
-    t_philosophers philo[200];
-    pthread_mutex_t a;
-}					t_general;
+    int dead;
+    pthread_mutex_t forks[200];
+    pthread_mutex_t print;
+    t_philosophers *philo;
+};
 
-int main(int argc, char** argv);
+void take_forks(t_philosophers *p);
 
-int mutex_create(t_general *general);
+void release_forks(t_philosophers *p);
 
-int parse(int argc, char** argv);
+void eat(t_philosophers *p);
 
-void error_handler(int err);
+void sleep_philo(t_philosophers *p);
 
-void error_handler_free();
+void think(t_philosophers *p);
 
-void asig_struct(char *argv[]);
+void init_philos(t_philosophers *philo, t_general *data);
 
 void init_general(t_general *data, char *argv[]);
 
-void init_philos(t_philosophers *philo, int number_of_philosophers);
+void create_philo_threads(t_general *data);
 
-void print_philos(t_general *data, t_philosophers *philo, int number_of_philosophers);
+void join_philo_threads(t_general *data, pthread_t monitor_thread);
 
-void print_threads(int id);
+int main(int argc, char **argv);
 
-int is_digit_str (char* str);
+int parse(int argc, char** argv);
 
-void *ft_routine (void *general);
+void *monitor(void *arg);
 
-int thread_create(t_general *general);
+void *ft_routine(void *arg);
+
+void error_handler(int err);
+
+void print_philos(t_general *data);
+
+int is_digit_str(char *str);
+
+long long timestamp_ms(void);
+
+void print_state(t_philosophers *philo, const char *msg);
 
 #endif
