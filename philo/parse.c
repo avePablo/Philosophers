@@ -9,7 +9,7 @@ int parse(int argc, char** argv)
         return 1;
     while(i < argc)
     {
-        arg = ft_atoi(argv[i]);
+        arg = ft_atol(argv[i]);
         if (is_digit_str(argv[i]) == 1)
         return 1;
         if (i == 1 && (arg < 1 || arg > PHILO_MAX_COUNT))

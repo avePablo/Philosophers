@@ -16,12 +16,12 @@ void init_philos(t_philosophers *philo, t_general *data)
 
 void init_general(t_general *data, char *argv[])
 {
-    data->number_of_philosophers = ft_atoi(argv[1]);
+    data->number_of_philosophers = ft_atol(argv[1]);
     data->time_to_die = ft_atol(argv[2]);
     data->time_to_eat = ft_atol(argv[3]);
     data->time_to_sleep = ft_atol(argv[4]);
     data->dead = 0;
-    data->number_of_times_each_philosopher_must_eat = (argv[5]) ? atoi(argv[5]) : -1;
+    data->number_of_times_each_philosopher_must_eat = (argv[5]) ? atol(argv[5]) : -1;
 
     pthread_mutex_init(&data->print, NULL);
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         return 1;
     }
     t_general *data = malloc(sizeof(t_general));
-    data->philo = malloc(sizeof(t_philosophers) * ft_atoi(argv[1]));
+    data->philo = malloc(sizeof(t_philosophers) * ft_atol(argv[1]));
     init_general(data, argv);
     init_philos(data->philo, data);
     print_philos(data);

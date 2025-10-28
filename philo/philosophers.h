@@ -1,7 +1,5 @@
 #ifndef PHILOSOPHERS_H
 #define PHILOSOPHERS_H
-#include "../Libft/libft.h"
-#include "../ft_printf/ft_printf.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -44,6 +42,8 @@ struct s_general
     pthread_mutex_t print;
     t_philosophers *philo;
 };
+
+long	ft_atol(char *str);
 
 void take_forks(t_philosophers *p);
 
