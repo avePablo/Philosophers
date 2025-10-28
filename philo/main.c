@@ -9,7 +9,7 @@ int thread_create(t_general *general)
    
     while (i < general->number_of_philosophers)
     {
-        pthread_create(&philo[i].thread, NULL, (void *)ft_routine(general), NULL);    
+        pthread_create(&philo[i].thread, NULL, ft_routine, general);    
         i++;   
     }
     return 0;

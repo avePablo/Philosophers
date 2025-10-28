@@ -22,14 +22,16 @@ void print_threads(int id)
     printf("%s colorines%s\n", colors[index], RESET);
     //to do para qe imprima todo lo que debe
 }
-int is_digit_str (char* str)
+int is_digit_str(char *str)
 {
-    int i;
-    i = 0;
-    if (!(str[i] >= '0' && str[i] <= '9'))
-	{
+    int i = 0;
+    if (!str || !str[0])
         return 1;
+    while (str[i])
+    {
+        if (str[i] < '0' || str[i] > '9')
+            return 1;
         i++;
     }
-	return 0;
+    return 0;
 }

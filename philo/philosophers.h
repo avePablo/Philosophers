@@ -61,7 +61,7 @@ void print_threads(int id);
 
 int is_digit_str (char* str);
 
-void *ft_routine (t_general *general);
+void *ft_routine (void *general);
 
 int thread_create(t_general *general);
 
