@@ -28,7 +28,7 @@ long long timestamp_ms(void)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
+    return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 void print_state(t_philosophers *philo, const char *msg)
@@ -36,6 +36,17 @@ void print_state(t_philosophers *philo, const char *msg)
     pthread_mutex_lock(&philo->data->print);
     if (!philo->data->dead)
         printf("%lld ms  Philosopher %d %s\n",
-               timestamp_ms() % 100000, philo->id, msg);
+               getime_now() % 100000 - philo->data->start_time, philo->id, msg);
     pthread_mutex_unlock(&philo->data->print);
+}
+
+long long getime_now(void)
+{
+    long long start;
+    long long new_start;
+    struct timeval tv;
+
+    start = timestamp_ms(); 
+    new_start = gettimeofday(&tv, NULL)* 1000;
+    return (new_start - start);
 }

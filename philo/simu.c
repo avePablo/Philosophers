@@ -31,7 +31,7 @@ void *ft_routine(void *arg)
     t_philosophers *p = (t_philosophers *)arg;
 
     if (p->id % 2 == 0)
-        usleep(50); // ligera desincronización
+        usleep(50);
 
     while (!p->data->dead)
     {

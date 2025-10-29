@@ -41,6 +41,7 @@ struct s_general
     pthread_mutex_t forks[200];
     pthread_mutex_t print;
     t_philosophers *philo;
+    long long		start_time;
 };
 
 long	ft_atol(char *str);
@@ -80,5 +81,7 @@ int is_digit_str(char *str);
 long long timestamp_ms(void);
 
 void print_state(t_philosophers *philo, const char *msg);
+
+long long getime_now(void);
 
 #endif

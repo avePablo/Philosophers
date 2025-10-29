@@ -22,6 +22,7 @@ void init_general(t_general *data, char *argv[])
     data->time_to_sleep = ft_atol(argv[4]);
     data->dead = 0;
     data->number_of_times_each_philosopher_must_eat = (argv[5]) ? atol(argv[5]) : -1;
+    data->start_time = timestamp_ms();
 
     pthread_mutex_init(&data->print, NULL);
 
