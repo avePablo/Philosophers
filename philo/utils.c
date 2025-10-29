@@ -35,10 +35,13 @@ void print_state(t_philosophers *philo, const char *msg)
 {
     pthread_mutex_lock(&philo->data->print);
     if (!philo->data->dead)
-        printf("%lld ms  Philosopher %d %s\n",
-               getime_now() % 100000 - philo->data->start_time, philo->id, msg);
+    {
+        long long now = timestamp_ms() - philo->data->start_time;
+        printf("%lld %d %s\n", now, philo->id, msg);
+    }
     pthread_mutex_unlock(&philo->data->print);
 }
+
 
 long long getime_now(void)
 {
@@ -49,4 +52,15 @@ long long getime_now(void)
     start = timestamp_ms(); 
     new_start = gettimeofday(&tv, NULL)* 1000;
     return (new_start - start);
+}
+
+void smart_sleep(long long duration_ms, t_general *data)
+{
+    long long start = timestamp_ms();
+    while (!data->dead)
+    {
+        if (timestamp_ms() - start >= duration_ms)
+            break;
+        usleep(100); // duermes en tramos pequeños
+    }
 }

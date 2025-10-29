@@ -84,4 +84,6 @@ void print_state(t_philosophers *philo, const char *msg);
 
 long long getime_now(void);
 
+void smart_sleep(long long duration_ms, t_general *data);
+
 #endif

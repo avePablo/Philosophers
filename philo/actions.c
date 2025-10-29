@@ -2,11 +2,22 @@
 
 void take_forks(t_philosophers *p)
 {
-    pthread_mutex_lock(&p->data->forks[p->fork_l]);
-    print_state(p, "has taken the left fork");
-    pthread_mutex_lock(&p->data->forks[p->fork_r]);
-    print_state(p, "has taken the right fork");
+    if (p->id % 2 == 0)
+    {
+        pthread_mutex_lock(&p->data->forks[p->fork_r]);
+        print_state(p, "has taken the right fork");
+        pthread_mutex_lock(&p->data->forks[p->fork_l]);
+        print_state(p, "has taken the left fork");
+    }
+    else
+    {
+        pthread_mutex_lock(&p->data->forks[p->fork_l]);
+        print_state(p, "has taken the left fork");
+        pthread_mutex_lock(&p->data->forks[p->fork_r]);
+        print_state(p, "has taken the right fork");
+    }
 }
+
 
 void release_forks(t_philosophers *p)
 {
@@ -18,13 +29,15 @@ void eat(t_philosophers *p)
 {
     print_state(p, "is eating");
     p->last_meal = timestamp_ms();
-    usleep(p->data->time_to_eat * 1000);
+    smart_sleep(p->data->time_to_eat, p->data);
+
 }
 
 void sleep_philo(t_philosophers *p)
 {
     print_state(p, "is sleeping");
-    usleep(p->data->time_to_sleep * 1000);
+   smart_sleep(p->data->time_to_sleep, p->data);
+
 }
 
 void think(t_philosophers *p)
