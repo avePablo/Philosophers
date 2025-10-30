@@ -5,7 +5,7 @@ void error_handler(int err)
     if (err == 1)
     printf("invalid/wrong number of arguments");
     else if (err == 2)
-     printf("un filosofo no puede comer 0 veces");
+    printf("un filosofo no puede comer 0 veces");
 }
 
 void print_philos(t_general *data)

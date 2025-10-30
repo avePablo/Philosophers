@@ -14,7 +14,7 @@ void *monitor(void *arg)
             {
                 pthread_mutex_lock(&data->print);
                 printf("%lld ms  Philosopher %d died\n",
-                       now % 100000, data->philo[i].id);
+                       (now - data->start_time) % 100000, data->philo[i].id);
                 data->dead = 1;
                 pthread_mutex_unlock(&data->print);
                 return NULL;
