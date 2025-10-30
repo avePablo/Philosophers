@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     pthread_t monitor_thread;
     
     i = parse(argc, argv);
-    if(i != 0)
+    if(i != 0 && i < 3)
     {
         error_handler(i);
         return 1;
@@ -70,6 +70,11 @@ int main(int argc, char **argv)
     data->philo = malloc(sizeof(t_philosophers) * ft_atol(argv[1]));
     init_general(data, argv);
     init_philos(data->philo, data);
+    if (i == 3)
+    {
+        one_philo_only(data);
+        return 1;
+    }
     print_philos(data);
     create_philo_threads(data);
     pthread_create(&monitor_thread, NULL, monitor, data);

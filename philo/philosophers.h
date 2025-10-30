@@ -86,4 +86,6 @@ long long getime_now(void);
 
 void smart_sleep(long long duration_ms, t_general *data);
 
+void one_philo_only(t_general *data);
+
 #endif
