@@ -7,7 +7,7 @@ void one_philo_only(t_general *data)
  
                 pthread_mutex_lock(&data->print);
                 printf("%lld ms  Philosopher %d died\n",
-                       (now - data->start_time) % 100000, data->philo[1].id);
+                       (now - data->start_time) % 100000, data->philo[0].id);
                 data->dead = 1;
                 pthread_mutex_unlock(&data->print);
 
