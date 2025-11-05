@@ -10,6 +10,7 @@ void init_philos(t_philosophers *philo, t_general *data)
         philo[i].fork_r = (i + 1) % data->number_of_philosophers;
         philo[i].last_meal = timestamp_ms();
         philo[i].data = data;
+        philo[i].times_eaten = 0;
         i++;
     }
 }

@@ -7,10 +7,10 @@ void *monitor(void *arg)
     while (!data->dead)
     {
         int i = 0;
-        while (i < data->number_of_philosophers)
+        while (i < data->number_of_philosophers && all_ate(data) != 0)
         {
             long long now = timestamp_ms();
-            if (now - data->philo[i].last_meal > data->time_to_die)
+            if ((now - data->philo[i].last_meal > data->time_to_die))
             {
                 pthread_mutex_lock(&data->print);
                 printf("%lld ms  Philosopher %d died\n",
@@ -42,4 +42,24 @@ void *ft_routine(void *arg)
         think(p);
     }
     return NULL;
+}
+
+int all_ate(t_general *data)
+{
+    int ate;
+    int i;
+    int j;
+    ate = 0;
+    i = 0;
+    j = 0;
+
+    while(i < data->number_of_philosophers)
+    {
+        if (data->philo[i].times_eaten >= data->number_of_times_each_philosopher_must_eat)
+        j++;
+    i++;
+    }   
+    if (j == data->number_of_philosophers)
+        ate++;
+    return ate;
 }

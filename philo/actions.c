@@ -26,11 +26,14 @@ void release_forks(t_philosophers *p)
 }
 
 void eat(t_philosophers *p)
-{
+{   
+    if (all_ate(p->data) == 0)
+    {
     print_state(p, "is eating");
     p->last_meal = timestamp_ms();
+    p->times_eaten++;
     smart_sleep(p->data->time_to_eat, p->data);
-
+    }
 }
 
 void sleep_philo(t_philosophers *p)
