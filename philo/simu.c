@@ -4,10 +4,16 @@ void *monitor(void *arg)
 {
     t_general *data = (t_general *)arg;
 
+    if (all_ate(data) != 0)
+        {
+            pthread_mutex_lock(&data->meal_lock);
+            data->dead = 1;
+            pthread_mutex_unlock(&data->meal_lock);
+        }
     while (!data->dead)
     {
         int i = 0;
-        while (i < data->number_of_philosophers && all_ate(data) != 0)
+        while (i < data->number_of_philosophers)
         {
             long long now = timestamp_ms();
             if ((now - data->philo[i].last_meal > data->time_to_die))
@@ -52,7 +58,8 @@ int all_ate(t_general *data)
     ate = 0;
     i = 0;
     j = 0;
-
+    if(data->number_of_times_each_philosopher_must_eat == -1)
+        return ate;
     while(i < data->number_of_philosophers)
     {
         if (data->philo[i].times_eaten >= data->number_of_times_each_philosopher_must_eat)

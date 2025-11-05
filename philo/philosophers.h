@@ -41,6 +41,7 @@ struct s_general
     int dead;
     pthread_mutex_t forks[200];
     pthread_mutex_t print;
+    pthread_mutex_t meal_lock;
     t_philosophers *philo;
     long long		start_time;
 };
