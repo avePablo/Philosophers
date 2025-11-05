@@ -1,0 +1,610 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:20 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 20:59:20 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+void	take_forks(t_philosophers *p)
+{
+	if (p->id % 2 == 0)
+	{
+		pthread_mutex_lock(&p->data->forks[p->fork_r]);
+		print_state(p, "has taken the right fork");
+		pthread_mutex_lock(&p->data->forks[p->fork_l]);
+		print_state(p, "has taken the left fork");
+	}
+	else
+	{
+		pthread_mutex_lock(&p->data->forks[p->fork_l]);
+		print_state(p, "has taken the left fork");
+		pthread_mutex_lock(&p->data->forks[p->fork_r]);
+		print_state(p, "has taken the right fork");
+	}
+}
+
+void	release_forks(t_philosophers *p)
+{
+	pthread_mutex_unlock(&p->data->forks[p->fork_l]);
+	pthread_mutex_unlock(&p->data->forks[p->fork_r]);
+}
+
+void	eat(t_philosophers *p)
+{
+	if (all_ate(p->data) == 0)
+	{
+		print_state(p, "is eating");
+		p->last_meal = timestamp_ms();
+		if (p->data->number_of_times_each_philosopher_must_eat != -1)
+			{
+			pthread_mutex_lock(&p->data->meal_lock);
+			p->times_eaten++;
+			pthread_mutex_unlock(&p->data->meal_lock);
+			}
+		smart_sleep(p->data->time_to_eat, p->data);
+	}
+}
+
+void	sleep_philo(t_philosophers *p)
+{
+	print_state(p, "is sleeping");
+	smart_sleep(p->data->time_to_sleep, p->data);
+}
+
+void	think(t_philosophers *p)
+{
+	print_state(p, "is thinking");
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:25 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 20:59:27 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+int	is_digit_str(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || !str[0])
+		return (1);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static int	is_whitespace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r');
+}
+
+static long	handle_overflow(long result, int sign, char next_digit)
+{
+	if (result > LONG_MAX / 10 || (result == LONG_MAX / 10 && next_digit > '7'))
+	{
+		if (sign == 1)
+			return (LONG_MAX);
+		else
+			return (LONG_MIN);
+	}
+	return (0);
+}
+
+long	ft_atol(char *str)
+{
+	int		i;
+	long	result;
+	long	overflow_check;
+	int		sign;
+
+	i = 0;
+	sign = 1;
+	result = 0;
+	while (is_whitespace(str[i]))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		overflow_check = handle_overflow(result, sign, str[i]);
+		if (overflow_check)
+			return (overflow_check);
+		result = result * 10 + (str[i++] - '0');
+	}
+	return (result * sign);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:29 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 22:46:16 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+void	create_philo_threads(t_general *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_create(&data->philo[i].thread, NULL, ft_routine,
+			&data->philo[i]);
+		i++;
+	}
+}
+
+void	join_philo_threads(t_general *data, pthread_t monitor_thread)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_join(data->philo[i].thread, NULL);
+		i++;
+	}
+	pthread_join(monitor_thread, NULL);
+}
+
+int	init_main(int argc, char **argv, t_general	*data)
+{
+	if (parse(argc, argv) != 0 && parse(argc, argv) < 3)
+	{
+		error_handler(parse(argc, argv));
+		return (1);
+	}
+	if (parse(argc, argv) == 3)
+	{
+		one_philo_only(data);
+		return (2);
+	}
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	pthread_t	monitor_thread;
+	t_general	*data;
+
+	data = malloc(sizeof(t_general));
+	if (init_main(argc, argv, data) == 1)
+		return (1);
+	data->philo = malloc(sizeof(t_philosophers) * ft_atol(argv[1]));
+	init_general(data, argv);
+	init_philos(data->philo, data);
+	if (init_main(argc, argv, data) == 2)
+		return (1);
+	create_philo_threads(data);
+	data->start_time = timestamp_ms();
+	pthread_create(&monitor_thread, NULL, monitor, data);
+	join_philo_threads(data, monitor_thread);
+	free(data->philo);
+	free(data);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:34 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 21:59:28 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+void	one_philo_only(t_general *data)
+{
+	long long	now;
+
+	now = timestamp_ms();
+	pthread_mutex_lock(&data->print);
+	printf("%lld ms  Philosopher %d died\n", (now - data->start_time) % 100000,
+		data->philo[0].id);
+	data->dead = 1;
+	pthread_mutex_unlock(&data->print);
+}
+
+int	parse(int argc, char **argv)
+{
+	long	arg;
+	int		i;
+
+	i = 1;
+	if (argc < 5 || argc > 6)
+		return (1);
+	while (i < argc)
+	{
+		arg = ft_atol(argv[i]);
+		if (is_digit_str(argv[i]) == 1)
+			return (1);
+		if (i == 1 && (arg == 1))
+			return (3);
+		if (i == 1 && (arg < 1 || arg > PHILO_MAX_COUNT))
+			return (1);
+		else if (i == 5 && (arg < 0 || arg > INT_MAX))
+			return (1);
+		else if (i == 5 && arg == 0)
+			return (2);
+		else if (i != 1 && i != 5 && (arg < 1 || arg > INT_MAX))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	init_philos(t_philosophers *philo, t_general *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		philo[i].id = i + 1;
+		philo[i].fork_l = i;
+		philo[i].fork_r = (i + 1) % data->number_of_philosophers;
+		philo[i].last_meal = timestamp_ms();
+		philo[i].data = data;
+		philo[i].times_eaten = 0;
+		i++;
+	}
+}
+
+void	init_general(t_general *data, char *argv[])
+{
+	int	i;
+
+	i = 0;
+	data->number_of_philosophers = ft_atol(argv[1]);
+	data->time_to_die = ft_atol(argv[2]);
+	data->time_to_eat = ft_atol(argv[3]);
+	data->time_to_sleep = ft_atol(argv[4]);
+	data->dead = 0;
+	data->number_of_times_each_philosopher_must_eat = -1;
+	if (argv[5])
+		data->number_of_times_each_philosopher_must_eat = ft_atol(argv[5]);
+	data->start_time = timestamp_ms();
+	pthread_mutex_init(&data->print, NULL);
+	while (i < data->number_of_philosophers)
+	{
+		pthread_mutex_init(&data->forks[i], NULL);
+		i++;
+	}
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simu.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:41 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 21:50:50 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+void	*monitor(void *arg)
+{
+	t_general	*data;
+	int			i;
+	long long	now;
+
+	data = (t_general *)arg;
+	ate_status(data);
+	while (!data->dead)
+	{
+		i = 0;
+		while (i < data->number_of_philosophers)
+		{
+			now = timestamp_ms();
+			if ((now - data->philo[i].last_meal > data->time_to_die))
+			{
+				philo_dead(data, now, i);
+				return (NULL);
+			}
+			i++;
+		}
+		usleep(1000);
+	}
+	return (NULL);
+}
+
+void	philo_dead(t_general	*data, long long now, int i)
+{
+	pthread_mutex_lock(&data->print);
+	printf("%lld ms  Philosopher %d died\n", (now
+			- data->start_time) % 100000, data->philo[i].id);
+	data->dead = 1;
+	pthread_mutex_unlock(&data->print);
+}
+
+void	*ft_routine(void *arg)
+{
+	t_philosophers	*p;
+
+	p = (t_philosophers *)arg;
+	if (p->id % 2 == 0)
+		usleep(50);
+	while (!p->data->dead)
+	{
+		take_forks(p);
+		eat(p);
+		release_forks(p);
+		sleep_philo(p);
+		think(p);
+	}
+	return (NULL);
+}
+
+int	all_ate(t_general *data)
+{
+	int		ate;
+	int		i;
+	int		j;
+
+	ate = 0;
+	i = 0;
+	j = 0;
+	if (data->number_of_times_each_philosopher_must_eat == -1)
+		return (ate);
+	while (i < data->number_of_philosophers)
+	{
+		if (data->philo[i].times_eaten
+			>= data->number_of_times_each_philosopher_must_eat)
+			j++;
+		i++;
+	}
+	if (j == data->number_of_philosophers)
+		ate++;
+	return (ate);
+}
+
+void	ate_status(t_general *data)
+{
+	if (all_ate(data) != 0)
+	{
+		pthread_mutex_lock(&data->meal_lock);
+		data->dead = 1;
+		pthread_mutex_unlock(&data->meal_lock);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:45 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 20:59:45 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+void	error_handler(int err)
+{
+	if (err == 1)
+		printf("invalid/wrong number of arguments");
+	else if (err == 2)
+		printf("un filosofo no puede comer 0 veces");
+}
+
+// void	print_philos(t_general *data)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	while (i < data->number_of_philosophers)
+// 	{
+// 		printf("Philosopher [%d]: L=%d, R=%d\n", data->philo[i].id,
+// 			data->philo[i].fork_l, data->philo[i].fork_r);
+// 		i++;
+// 	}
+// 	printf("die=%lld, eat=%lld, sleep=%lld, times=%d\n", data->time_to_die,
+// 		data->time_to_eat, data->time_to_sleep,
+// 		data->number_of_times_each_philosopher_must_eat);
+// }
+
+long long	timestamp_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	print_state(t_philosophers *philo, const char *msg)
+{
+	long long	now;
+
+	now = 0;
+	pthread_mutex_lock(&philo->data->print);
+	if (!philo->data->dead)
+	{
+		now = timestamp_ms() - philo->data->start_time;
+		printf("%lld %d %s\n", now, philo->id, msg);
+	}
+	pthread_mutex_unlock(&philo->data->print);
+}
+
+long long	getime_now(void)
+{
+	long long		start;
+	long long		new_start;
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	start = timestamp_ms();
+	new_start = tv.tv_sec * 1000;
+	return (new_start - start);
+}
+
+void	smart_sleep(long long duration_ms, t_general *data)
+{
+	long long	start;
+
+	start = timestamp_ms();
+	while (!data->dead)
+	{
+		if (timestamp_ms() - start >= duration_ms)
+			break ;
+		usleep(100);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:38 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 22:19:43 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
+# include <limits.h>
+# include <pthread.h>
+# include <stdarg.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
+
+# define PHILO_MAX_COUNT 200
+# define RESET "\033[0m"
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define YELLOW "\033[33m"
+# define BLUE "\033[34m"
+# define MAGENTA "\033[35m"
+
+typedef struct s_general		t_general;
+typedef struct s_philosophers	t_philosophers;
+
+struct							s_philosophers
+{
+	int							id;
+	int							fork_l;
+	int							fork_r;
+	int							times_eaten;
+	long long					last_meal;
+	pthread_t					thread;
+	t_general					*data;
+};
+
+struct							s_general
+{
+	int							number_of_philosophers;
+	long long					time_to_die;
+	long long					time_to_eat;
+	long long					time_to_sleep;
+	int							number_of_times_each_philosopher_must_eat;
+	int							dead;
+	pthread_mutex_t				forks[200];
+	pthread_mutex_t				print;
+	pthread_mutex_t				meal_lock;
+	t_philosophers				*philo;
+	long long					start_time;
+};
+
+long							ft_atol(char *str);
+
+void							take_forks(t_philosophers *p);
+
+void							release_forks(t_philosophers *p);
+
+void							eat(t_philosophers *p);
+
+void							sleep_philo(t_philosophers *p);
+
+void							think(t_philosophers *p);
+
+void							init_philos(t_philosophers *philo,
+									t_general *data);
+
+void							init_general(t_general *data, char *argv[]);
+
+void							create_philo_threads(t_general *data);
+
+void							join_philo_threads(t_general *data,
+									pthread_t monitor_thread);
+
+int								main(int argc, char **argv);
+
+int								parse(int argc, char **argv);
+
+void							*monitor(void *arg);
+
+void							*ft_routine(void *arg);
+
+void							error_handler(int err);
+
+void							print_philos(t_general *data);
+
+int								is_digit_str(char *str);
+
+long long						timestamp_ms(void);
+
+void							print_state(t_philosophers *philo,
+									const char *msg);
+
+long long						getime_now(void);
+
+void							smart_sleep(long long duration_ms,
+									t_general *data);
+
+void							one_philo_only(t_general *data);
+
+int								all_ate(t_general *data);
+
+void							ate_status(t_general *data);
+
+void							philo_dead(t_general *data, long long now,
+									int i);
+
+void							lunch_clean_philos(t_general *data,
+									pthread_t monitor_thread);
+
+int								init_main(int argc, char **argv,
+									t_general *data);
+
+#endif

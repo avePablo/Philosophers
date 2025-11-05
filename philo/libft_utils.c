@@ -1,17 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/05 20:59:25 by pabalvar          #+#    #+#             */
+/*   Updated: 2025/11/05 20:59:27 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
-int is_digit_str(char *str)
+int	is_digit_str(char *str)
 {
-    int i = 0;
-    if (!str || !str[0])
-        return 1;
-    while (str[i])
-    {
-        if (str[i] < '0' || str[i] > '9')
-            return 1;
-        i++;
-    }
-    return 0;
+	int	i;
+
+	i = 0;
+	if (!str || !str[0])
+		return (1);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 static int	is_whitespace(char c)
