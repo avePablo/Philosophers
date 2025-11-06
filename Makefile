@@ -1,15 +1,15 @@
-NAME = philosophers
+NAME = philo
 
 CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-SRC =	./philo/utils.c \
-		./philo/main.c \
-		./philo/actions.c \
-		./philo/parse.c \
-		./philo/libft_utils.c \
-		./philo/simu.c 
+SRC =	./philosophers/utils.c \
+		./philosophers/main.c \
+		./philosophers/actions.c \
+		./philosophers/parse.c \
+		./philosophers/libft_utils.c \
+		./philosophers/simu.c 
 
 OBJ = $(SRC:.c=.o)
 
