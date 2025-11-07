@@ -6,7 +6,7 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:34 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/05 23:38:17 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:45:05 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	init_general(t_general *data, char *argv[])
 		data->number_of_times_each_philosopher_must_eat = ft_atol(argv[5]);
 	data->start_time = timestamp_ms();
 	pthread_mutex_init(&data->print, NULL);
+	pthread_mutex_init(&data->meal_lock, NULL);
 	while (i < data->number_of_philosophers)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);

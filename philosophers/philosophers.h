@@ -6,7 +6,7 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:38 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/05 22:19:43 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:47:02 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,7 @@ void							lunch_clean_philos(t_general *data,
 
 int								init_main(int argc, char **argv,
 									t_general *data);
+
+void							destroy_mutexes(t_general *data);
 
 #endif

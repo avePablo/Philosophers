@@ -6,11 +6,26 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:29 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/05 22:49:37 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:51:47 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	destroy_mutexes(t_general *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->meal_lock);
+}
+
 
 void	create_philo_threads(t_general *data)
 {
@@ -21,6 +36,8 @@ void	create_philo_threads(t_general *data)
 	{
 		pthread_create(&data->philo[i].thread, NULL, ft_routine,
 			&data->philo[i]);
+		printf("[DEBUG] pthread_create: hilo %ld (Philo %d)\n",
+			data->philo[i].thread, data->philo[i].id);
 		i++;
 	}
 }
@@ -69,6 +86,7 @@ int	main(int argc, char **argv)
 	create_philo_threads(data);
 	pthread_create(&monitor_thread, NULL, monitor, data);
 	join_philo_threads(data, monitor_thread);
+	destroy_mutexes(data);
 	free(data->philo);
 	free(data);
 	return (0);
