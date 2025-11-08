@@ -49,6 +49,8 @@ void	print_state(t_philosophers *philo, const char *msg)
 	long long	now;
 
 	now = 0;
+	/* lock death_lock first, then print to keep a consistent lock order */
+	pthread_mutex_lock(&philo->data->death_lock);
 	pthread_mutex_lock(&philo->data->print);
 	if (!philo->data->dead)
 	{
@@ -56,6 +58,7 @@ void	print_state(t_philosophers *philo, const char *msg)
 		printf("%lld %d %s\n", now, philo->id, msg);
 	}
 	pthread_mutex_unlock(&philo->data->print);
+	pthread_mutex_unlock(&philo->data->death_lock);
 }
 
 long long	getime_now(void)
@@ -75,7 +78,8 @@ void	smart_sleep(long long duration_ms, t_general *data)
 	long long	start;
 
 	start = timestamp_ms();
-	while (!data->dead)
+	/* use is_dead() which locks death_lock internally */
+	while (!is_dead(data))
 	{
 		if (timestamp_ms() - start >= duration_ms)
 			break ;

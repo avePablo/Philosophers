@@ -53,6 +53,7 @@ struct							s_general
 	pthread_mutex_t				forks[200];
 	pthread_mutex_t				print;
 	pthread_mutex_t				meal_lock;
+	pthread_mutex_t				death_lock;
 	t_philosophers				*philo;
 	long long					start_time;
 };
@@ -119,5 +120,7 @@ int								init_main(int argc, char **argv,
 									t_general *data);
 
 void							destroy_mutexes(t_general *data);
+
+int								is_dead(t_general *data);
 
 #endif

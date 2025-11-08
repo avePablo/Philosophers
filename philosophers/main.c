@@ -24,6 +24,7 @@ void	destroy_mutexes(t_general *data)
 	}
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->meal_lock);
+	pthread_mutex_destroy(&data->death_lock);
 }
 
 
@@ -36,8 +37,6 @@ void	create_philo_threads(t_general *data)
 	{
 		pthread_create(&data->philo[i].thread, NULL, ft_routine,
 			&data->philo[i]);
-		printf("[DEBUG] pthread_create: hilo %ld (Philo %d)\n",
-			data->philo[i].thread, data->philo[i].id);
 		i++;
 	}
 }
