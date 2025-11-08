@@ -56,11 +56,6 @@ void	join_philo_threads(t_general *data, pthread_t monitor_thread)
 
 int	init_main(int argc, char **argv, t_general	*data)
 {
-	if (parse(argc, argv) != 0 && parse(argc, argv) < 3)
-	{
-		error_handler(parse(argc, argv));
-		return (1);
-	}
 	if (parse(argc, argv) == 3)
 	{
 		one_philo_only(data);
@@ -75,8 +70,11 @@ int	main(int argc, char **argv)
 	t_general	*data;
 
 	data = malloc(sizeof(t_general));
-	if (init_main(argc, argv, data) == 1)
+	if (parse(argc, argv) != 0 && parse(argc, argv) < 3)
+	{
+		error_handler(parse(argc, argv));
 		return (1);
+	}
 	data->philo = malloc(sizeof(t_philosophers) * ft_atol(argv[1]));
 	init_general(data, argv);
 	init_philos(data->philo, data);

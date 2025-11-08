@@ -60,7 +60,6 @@ void	*ft_routine(void *arg)
 	t_philosophers	*p;
 
 	p = (t_philosophers *)arg;
-	printf("[DEBUG] Thread %ld (Philo %d) creado\n", pthread_self(), p->id);
 	if (p->id % 2 == 0)
 		usleep(50);
 	while (!is_dead(p->data))
@@ -71,7 +70,6 @@ void	*ft_routine(void *arg)
 		sleep_philo(p);
 		think(p);
 	}
-	printf("[DEBUG] Thread %ld (Philo %d) terminado\n", pthread_self(), p->id);
 	return (NULL);
 }
 

@@ -28,13 +28,13 @@ void	one_philo_only(t_general *data)
 
 	now = timestamp_ms();
 	/* lock death_lock first, then print to keep consistent ordering */
-	pthread_mutex_lock(&data->death_lock);
+	//pthread_mutex_lock(&data->death_lock);
 	pthread_mutex_lock(&data->print);
 	printf("%lld ms  Philosopher %d died\n", (now - data->start_time) % 100000,
 		data->philo[0].id);
-	data->dead = 1;
+	//data->dead = 1;
 	pthread_mutex_unlock(&data->print);
-	pthread_mutex_unlock(&data->death_lock);
+	//pthread_mutex_unlock(&data->death_lock);
 }
 
 int	parse(int argc, char **argv)
