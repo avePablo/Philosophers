@@ -6,7 +6,7 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:29 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/07 17:51:47 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/11 12:44:17 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	destroy_mutexes(t_general *data)
 	pthread_mutex_destroy(&data->meal_lock);
 	pthread_mutex_destroy(&data->death_lock);
 }
-
 
 void	create_philo_threads(t_general *data)
 {

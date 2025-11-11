@@ -6,36 +6,11 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:34 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/07 17:45:05 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/11 13:04:29 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-int is_dead(t_general *data)
-{
-	int	dead_status;
-
-	pthread_mutex_lock(&data->death_lock);
-	dead_status = data->dead;
-	pthread_mutex_unlock(&data->death_lock);
-	return (dead_status);
-}
-
-void	one_philo_only(t_general *data)
-{
-	long long	now;
-
-	now = timestamp_ms();
-	/* lock death_lock first, then print to keep consistent ordering */
-	//pthread_mutex_lock(&data->death_lock);
-	pthread_mutex_lock(&data->print);
-	printf("%lld ms  Philosopher %d died\n", (now - data->start_time) % 100000,
-		data->philo[0].id);
-	//data->dead = 1;
-	pthread_mutex_unlock(&data->print);
-	//pthread_mutex_unlock(&data->death_lock);
-}
 
 int	parse(int argc, char **argv)
 {
@@ -103,4 +78,25 @@ void	init_general(t_general *data, char *argv[])
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
+}
+
+int	is_dead(t_general *data)
+{
+	int	dead_status;
+
+	pthread_mutex_lock(&data->death_lock);
+	dead_status = data->dead;
+	pthread_mutex_unlock(&data->death_lock);
+	return (dead_status);
+}
+
+void	one_philo_only(t_general *data)
+{
+	long long	now;
+
+	now = timestamp_ms();
+	pthread_mutex_lock(&data->print);
+	printf("%lld ms  Philosopher %d died\n", (now - data->start_time) % 100000,
+		data->philo[0].id);
+	pthread_mutex_unlock(&data->print);
 }

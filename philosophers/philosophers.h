@@ -6,7 +6,7 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:38 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/07 17:47:02 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/11 13:16:38 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,7 @@ int								init_main(int argc, char **argv,
 void							destroy_mutexes(t_general *data);
 
 int								is_dead(t_general *data);
+
+long long						do_monitor(t_general *data, int i);
 
 #endif

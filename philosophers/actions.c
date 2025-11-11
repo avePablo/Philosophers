@@ -41,7 +41,6 @@ void	eat(t_philosophers *p)
 	if (all_ate(p->data) == 0)
 	{
 		print_state(p, "is eating");
-		/* protect updates to last_meal and times_eaten */
 		pthread_mutex_lock(&p->data->meal_lock);
 		p->last_meal = timestamp_ms();
 		if (p->data->number_of_times_each_philosopher_must_eat != -1)

@@ -6,11 +6,19 @@
 /*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 20:59:25 by pabalvar          #+#    #+#             */
-/*   Updated: 2025/11/05 20:59:27 by pabalvar         ###   ########.fr       */
+/*   Updated: 2025/11/11 12:59:16 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	error_handler(int err)
+{
+	if (err == 1)
+		printf("invalid/wrong number of arguments\n");
+	else if (err == 2)
+		printf("un filosofo no puede comer 0 veces\n");
+}
 
 int	is_digit_str(char *str)
 {

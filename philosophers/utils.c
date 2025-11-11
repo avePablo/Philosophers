@@ -12,29 +12,30 @@
 
 #include "philosophers.h"
 
-void	error_handler(int err)
+int	all_ate(t_general *data)
 {
-	if (err == 1)
-		printf("invalid/wrong number of arguments\n");
-	else if (err == 2)
-		printf("un filosofo no puede comer 0 veces\n");
+	int	ate;
+	int	i;
+	int	j;
+
+	ate = 0;
+	i = 0;
+	j = 0;
+	if (data->number_of_times_each_philosopher_must_eat == -1)
+		return (ate);
+	pthread_mutex_lock(&data->meal_lock);
+	while (i < data->number_of_philosophers)
+	{
+		if (data->philo[i].times_eaten
+			>= data->number_of_times_each_philosopher_must_eat)
+			j++;
+		i++;
+	}
+	pthread_mutex_unlock(&data->meal_lock);
+	if (j == data->number_of_philosophers)
+		ate++;
+	return (ate);
 }
-
-// void	print_philos(t_general *data)
-// {
-// 	int		i;
-
-// 	i = 0;
-// 	while (i < data->number_of_philosophers)
-// 	{
-// 		printf("Philosopher [%d]: L=%d, R=%d\n", data->philo[i].id,
-// 			data->philo[i].fork_l, data->philo[i].fork_r);
-// 		i++;
-// 	}
-// 	printf("die=%lld, eat=%lld, sleep=%lld, times=%d\n", data->time_to_die,
-// 		data->time_to_eat, data->time_to_sleep,
-// 		data->number_of_times_each_philosopher_must_eat);
-// }
 
 long long	timestamp_ms(void)
 {
@@ -49,7 +50,6 @@ void	print_state(t_philosophers *philo, const char *msg)
 	long long	now;
 
 	now = 0;
-	/* lock death_lock first, then print to keep a consistent lock order */
 	pthread_mutex_lock(&philo->data->death_lock);
 	pthread_mutex_lock(&philo->data->print);
 	if (!philo->data->dead)
@@ -78,7 +78,6 @@ void	smart_sleep(long long duration_ms, t_general *data)
 	long long	start;
 
 	start = timestamp_ms();
-	/* use is_dead() which locks death_lock internally */
 	while (!is_dead(data))
 	{
 		if (timestamp_ms() - start >= duration_ms)
