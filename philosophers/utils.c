@@ -82,6 +82,6 @@ void	smart_sleep(long long duration_ms, t_general *data)
 	{
 		if (timestamp_ms() - start >= duration_ms)
 			break ;
-		usleep(100);
+		usleep(200);
 	}
 }
